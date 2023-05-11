@@ -22,6 +22,9 @@ const options = {
   }
 };
 
+
+
+
 function App() {
 
   const [graphState, setGraphState] = useState(
@@ -37,6 +40,20 @@ function App() {
       edges: []
     })
   };
+
+  function downloadJson() {
+    const data =JSON.parse(JSON.stringify(graphState));
+    const fileName = "graph_data.json";
+    const jsonStr = JSON.stringify(data, null, 2);
+    const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(jsonStr);
+  
+    const downloadLink = document.createElement("a");
+    downloadLink.setAttribute("href", dataUri);
+    downloadLink.setAttribute("download", fileName);
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
 
   const updateGraph = (updates) => {
     // updates will be provided as a list of lists
@@ -157,7 +174,7 @@ function App() {
 
             updateGraph(updates);
 
-            document.getElementsByClassName("searchBar")[0].value = "";
+            //document.getElementsByClassName("searchBar")[0].value = "";
             document.body.style.cursor = 'default';
             document.getElementsByClassName("generateButton")[0].disabled = false;
           }).catch((error) => {
@@ -208,7 +225,7 @@ function App() {
 
             setGraphState(new_graph);
 
-            document.getElementsByClassName("searchBar")[0].value = "";
+            //document.getElementsByClassName("searchBar")[0].value = "";
             document.body.style.cursor = 'default';
             document.getElementsByClassName("generateButton")[0].disabled = false;
           }).catch((error) => {
@@ -230,16 +247,27 @@ function App() {
     }
   }
 
-
   const createGraph = () => {
     document.body.style.cursor = 'wait';
-
     document.getElementsByClassName("generateButton")[0].disabled = true;
-    const prompt = document.getElementsByClassName("searchBar")[0].value;
+    
     const apiKey = document.getElementsByClassName("apiKeyTextField")[0].value;
 
-    queryPrompt(prompt, apiKey);
-  }
+    const inputElement = document.getElementById("txt-file-input");
+    const file = inputElement.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+      const contents = event.target.result;
+      const prompt = contents.toString();
+      console.log(prompt);
+      queryPrompt(prompt, apiKey);
+    };
+
+    reader.readAsText(file);
+  };
+
+
 
   return (
     <div className='container'>
@@ -248,7 +276,8 @@ function App() {
       <p className='opensourceText'><a href="https://github.com/varunshenoy/graphgpt">GraphGPT is open-source</a>&nbsp;🎉</p>
       <center>
         <div className='inputContainer'>
-          <input className="searchBar" placeholder="Describe your graph..."></input>
+          <p className='infotext'>Upload txt-file</p>
+          <input type="file" id="txt-file-input"></input>
           <input className="apiKeyTextField" type="password" placeholder="Enter your OpenAI API key..."></input>
           <button className="generateButton" onClick={createGraph}>Generate</button>
           <button className="clearButton" onClick={clearState}>Clear</button>
@@ -257,6 +286,11 @@ function App() {
       <div className='graphContainer'>
         <Graph graph={graphState} options={options} style={{ height: "640px" }} />
       </div>
+      <center>
+        <div className='Download'>
+          <button className="downloadButton" onClick={downloadJson}>Download JSON</button>
+        </div>
+      </center>
       <p className='footer'>Pro tip: don't take a screenshot! You can right-click and save the graph as a .png  📸</p>
     </div>
   );

@@ -1,4 +1,5 @@
 Given the current state of a graph and a prompt, extrapolate as many relationships as possible from the prompt and update the state. Every node has an id, label, and color (in hex). Every edge has a to and from with node ids, and a label. Edges are directed, so the order of the from and to is important.
+The graph nodes should only represent names. 
 
 Examples:
 current state:
