@@ -1,6 +1,10 @@
 # GraphGPT
 ### Natural Language → Knowledge Graph
 
+Edits:
+  - Upload txt-file
+  - Download graph info JSON
+
 ![demo](demo.gif)
 
 *Note: this is a toy project I built out over a weekend. If you want to use knowledge graphs in your project, check out [GPT Index](https://github.com/jerryjliu/gpt_index).*
